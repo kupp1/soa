@@ -1,0 +1,403 @@
+#TODO: 1st service specific operations, lists pagination
+
+openapi: 3.0.3
+info:
+  title: |-
+    SOA lab #1 Kupershtein P34101
+  description: |-
+    SOA lab 1
+  version: 1.0.0
+
+tags:
+  - name: First Service
+    description: 1st service
+  - name: Second Service
+    description: 2nd service
+
+paths:
+  /flat:
+    get:
+      tags:
+        - First Service
+      parameters:
+        - $ref: '#/components/parameters/filter'
+      summary: Get all flats
+      operationId: getAllFlats
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfFlats'
+    post:
+      tags:
+        - First Service
+      summary: Add new flat
+      operationId: addNewFlat
+      parameters:
+        - $ref: '#/components/parameters/flat'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Flat'
+        '400':
+          description: bad given flat parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - First Service
+      summary: Update flat
+      parameters:
+        - $ref: '#/components/parameters/flat'
+      responses:
+        '200':
+          description: flat successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Flat'
+        '400':
+          description: invalid flat parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /flat/{flatId}:
+    get:
+      summary: Get flat by id
+      tags:
+        - First Service
+      parameters:
+        - $ref: '#/components/parameters/flatId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Flat'
+        '400':
+          description: invalid flatId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - First Service
+      summary: Delete flat
+      parameters:
+        - $ref: '#/components/parameters/flatId'
+      responses:
+        '200':
+          description: flat successfully deleted
+        '400':
+          description: invalid flatId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /agency/find-with-balcony/{cheapest}/{with-balcony}:
+    get:
+      tags:
+        - Second Service
+      summary: find the cheapest (or most expensive) flat with a balcony (or without a balcony)
+      parameters:
+        - name: cheapest
+          in: path
+          description: |-
+            true - find cheapest
+            
+            false - find most expensive
+          schema:
+            type: boolean
+          required: true
+        - name: with-balcony
+          in: path
+          description: |-
+            true - find with balcony
+            
+            false - find without balcony
+          schema:
+            type: boolean
+          required: true
+      responses:
+        '200':
+          description: flat found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfFlats'
+        '404':
+          description: requested flat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /get-ordered-by-time-to-metro/{by-transport}/{desc}:
+    get:
+      tags:
+        - Second Service
+      summary: get a list of all flats sorted by the time to subway on foot (or by transport) in ascending (or descending) order
+      parameters:
+        - name: by-transport
+          in: path
+          description: |-
+            true - get sorted by transport
+            
+            false - get sorted on foot
+          schema:
+            type: boolean
+          required: true
+        - name: desc
+          in: path
+          description: |-
+            true - sorted descending
+            
+            false - sorted ascending
+          schema:
+            type: boolean
+          required: true
+        - $ref: '#/components/parameters/filter'
+      responses:
+        '200':
+          description: flats found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfFlats'
+        '404':
+          description: flats not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  parameters:
+      flat:
+        name: flat
+        in: query
+        style: deepObject
+        schema:
+          $ref: '#/components/schemas/Flat'
+        required: true
+
+      flatId:
+        name: flatId
+        in: path
+        schema:
+          type: number
+          format: int64
+        required: true
+
+      filter:
+        name: filter
+        in: query
+        style: deepObject
+        schema:
+          $ref: '#/components/schemas/FlatFilters'
+
+      filterRequired:
+        name: filter
+        in: query
+        style: deepObject
+        required: true
+        schema:
+          $ref: '#/components/schemas/FlatFilters'
+
+  schemas:
+    Flat:
+      required:
+        - name
+        - coordinates
+        - area
+        - numberOfRooms
+        - furnish
+        - view
+        - transport
+        - house
+        - price
+        - hasBalcony
+        - timeToSubwayOnTransport
+        - timeToSubwayOnFoot
+      type: object
+      properties:
+        id:
+          description: Unique. Generated automatically
+          type: integer
+          format: int64
+          minimum: 1
+        name:
+          type: string
+          minLength: 1
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        creationDate:
+          type: string
+          format: date-time
+          description: Generated automatically
+        area:
+          type: number
+          format: int32
+          minimum: 0
+        numberOfRooms:
+          type: number
+          format: int32
+          minimum: 0
+        furnish:
+          $ref: '#/components/schemas/Furnish'
+        view:
+          $ref: '#/components/schemas/View'
+        transport:
+          $ref: '#/components/schemas/Transport'
+        house:
+          $ref: '#/components/schemas/House'
+        price:
+          type: number
+          format: int64
+        hasBalcony:
+          type: boolean
+        timeToSubwayOnTransport:
+          type: number
+          format: int64
+          minimum: 1
+        timeToSubwayOnFoot:
+          type: number
+          format: int64
+          minimum: 1
+    ArrayOfFlats:
+      type: array
+      items:
+        $ref: '#/components/schemas/Flat'
+    Coordinates:
+      type: object
+      required:
+        - x
+        - y
+      properties:
+        x:
+          type: number
+          format: float
+        y:
+          type: integer
+          format: int32
+
+    FilterIntegerQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\](-?\d{1,19})'
+    FilterPositiveIntegerQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\](\d{1,19})'
+    FilterFloatQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\](-?([0-9]*[.])?[0-9]+)'
+    FilterBooleanQuery:
+      type: string
+      pattern: '\[(eq|neq)\](true|false)'
+    FilterStringQuery:
+      type: string
+      pattern: '\[(substr)\](.+)'
+    FilterDateQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\]((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)'
+    FilterFurnishQuery:
+      type: string
+      pattern: '\[(eq|neq)\](DESIGNER|FINE|BAD|LITTLE)'
+    FilterViewQuery:
+      type: string
+      pattern: '\[(eq|neq)\](STREET|YARD|PARK|BAD|GOOD)'
+    FilterTransportQuery:
+      type: string
+      pattern: '\[(eq|neq)\](FEW|NONE|ENOUGH)'
+
+    House:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        year:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 808
+        numberOfLifts:
+          type: integer
+          format: int64
+    Furnish:
+      type: string
+      enum:
+        - DESIGNER
+        - FINE
+        - BAD
+        - LITTLE
+    View:
+      type: string
+      enum:
+        - STREET
+        - YARD
+        - PARK
+        - BAD
+        - GOOD
+    Transport:
+      type: string
+      enum:
+        - FEW
+        - NONE
+        - ENOUGH
+    Error:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            type: string
+            minLength: 1
+    FlatFilters:
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/FilterPositiveIntegerQuery'
+          name:
+            $ref: '#/components/schemas/FilterStringQuery'
+          coordinateX:
+            $ref: '#/components/schemas/FilterFloatQuery'
+          coordinateY:
+            $ref: '#/components/schemas/FilterIntegerQuery'
+          creationDate:
+            $ref: '#/components/schemas/FilterDateQuery'
+          area:
+            $ref: '#/components/schemas/FilterPositiveIntegerQuery'
+          numberOfRooms:
+            $ref: '#/components/schemas/FilterPositiveIntegerQuery'
+          furnish:
+            $ref: '#/components/schemas/FilterFurnishQuery'
+          view:
+            $ref: '#/components/schemas/FilterViewQuery'
+          transport:
+            $ref: '#/components/schemas/FilterTransportQuery'
+          houseName:
+            $ref: '#/components/schemas/FilterStringQuery'
+          houseYear:
+            $ref: '#/components/schemas/FilterPositiveIntegerQuery'
+          houseNumberOfLifts:
+            $ref: '#/components/schemas/FilterPositiveIntegerQuery'
+          price:
+            $ref: '#/components/schemas/FilterIntegerQuery'
+          hasBalcony:
+            $ref: '#/components/schemas/FilterBooleanQuery'
+          timeToSubwayOnTransport:
+            $ref: '#/components/schemas/FilterIntegerQuery'
+          timeToSubwayOnFoot:
+            $ref: '#/components/schemas/FilterIntegerQuery'

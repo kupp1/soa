@@ -1,0 +1,81 @@
+openapi: 3.0.3
+info:
+  title: Agency Service
+  description: |-
+    SOA lab #1 Kupershtein P34101
+  version: 1.0.0
+
+tags:
+  - name: Agency
+
+paths:
+  /agency/find-with-balcony/{cheapest}/{with-balcony}:
+    get:
+      tags:
+        - Agency
+      summary: find the cheapest (or most expensive) flat with a balcony (or without a balcony)
+      parameters:
+        - name: cheapest
+          in: path
+          description: |-
+            true - find cheapest
+
+            false - find most expensive
+          schema:
+            type: boolean
+          required: true
+        - name: with-balcony
+          in: path
+          description: |-
+            true - find with balcony
+
+            false - find without balcony
+          schema:
+            type: boolean
+          required: true
+      responses:
+        '200':
+          description: flat found
+          content:
+            application/json:
+              schema:
+                $ref: 'FlatService.yaml#/components/schemas/ArrayOfFlats'
+        default:
+          $ref: 'FlatService.yaml#/components/responses/defaultError'
+
+  /agency/get-ordered-by-time-to-metro/{by-transport}/{desc}:
+    get:
+      tags:
+        - Agency
+      summary: get a list of all flats sorted by the time to subway on foot (or by transport) in ascending (or descending) order
+      parameters:
+        - name: by-transport
+          in: path
+          description: |-
+            true - get sorted by transport
+
+            false - get sorted on foot
+          schema:
+            type: boolean
+          required: true
+        - name: desc
+          in: path
+          description: |-
+            true - sorted descending
+
+            false - sorted ascending
+          schema:
+            type: boolean
+          required: true
+        - $ref: 'FlatService.yaml#/components/parameters/filter'
+        - $ref: 'FlatService.yaml#/components/parameters/page'
+        - $ref: 'FlatService.yaml#/components/parameters/pageSize'
+      responses:
+        '200':
+          description: flats found
+          content:
+            application/json:
+              schema:
+                $ref: 'FlatService.yaml#/components/schemas/ArrayOfFlats'
+        default:
+          $ref: 'FlatService.yaml#/components/responses/defaultError'

@@ -1,26 +1,23 @@
-#TODO: 1st service specific operations, lists pagination
-
 openapi: 3.0.3
 info:
-  title: |-
-    SOA lab #1 Kupershtein P34101
+  title: Flat Service
   description: |-
-    SOA lab 1
+    SOA lab #1 Kupershtein P34101
   version: 1.0.0
 
 tags:
-  - name: First Service
-    description: 1st service
-  - name: Second Service
-    description: 2nd service
+  - name: Flat
 
 paths:
   /flat:
     get:
       tags:
-        - First Service
+        - Flat
       parameters:
         - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
       summary: Get all flats
       operationId: getAllFlats
       responses:
@@ -30,13 +27,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOfFlats'
+        default:
+          $ref: '#/components/responses/defaultError'
     post:
       tags:
-        - First Service
+        - Flat
       summary: Add new flat
       operationId: addNewFlat
-      parameters:
-        - $ref: '#/components/parameters/flat'
+      requestBody:
+        required: true
+        content:
+          application/json:
+              schema:
+                $ref: '#/components/schemas/Flat'
       responses:
         '200':
           description: successful operation
@@ -44,18 +47,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Flat'
-        '400':
-          description: bad given flat parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/defaultError'
     put:
       tags:
-        - First Service
+        - Flat
       summary: Update flat
-      parameters:
-        - $ref: '#/components/parameters/flat'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Flat'
       responses:
         '200':
           description: flat successfully updated
@@ -63,18 +66,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Flat'
-        '400':
-          description: invalid flat parameters
+        default:
+          $ref: '#/components/responses/defaultError'
+    delete:
+      tags:
+        - Flat
+      summary: Delete flats by filter query
+      parameters:
+        - $ref: '#/components/parameters/filterRequired'
+      responses:
+        '200':
+          description: flats deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/ArrayOfFlats'
+        default:
+          $ref: '#/components/responses/defaultError'
 
   /flat/{flatId}:
     get:
-      summary: Get flat by id
       tags:
-        - First Service
+        - Flat
+      summary: Get flat by id
       parameters:
         - $ref: '#/components/parameters/flatId'
       responses:
@@ -84,104 +98,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Flat'
-        '400':
-          description: invalid flatId
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/defaultError'
     delete:
       tags:
-        - First Service
+        - Flat
       summary: Delete flat
       parameters:
         - $ref: '#/components/parameters/flatId'
       responses:
         '200':
           description: flat successfully deleted
-        '400':
-          description: invalid flatId
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/defaultError'
 
-  /agency/find-with-balcony/{cheapest}/{with-balcony}:
+  /flat/min-area:
     get:
       tags:
-        - Second Service
-      summary: find the cheapest (or most expensive) flat with a balcony (or without a balcony)
-      parameters:
-        - name: cheapest
-          in: path
-          description: |-
-            true - find cheapest
-            
-            false - find most expensive
-          schema:
-            type: boolean
-          required: true
-        - name: with-balcony
-          in: path
-          description: |-
-            true - find with balcony
-            
-            false - find without balcony
-          schema:
-            type: boolean
-          required: true
+        - Flat
+      summary: Get flat with smallest area
       responses:
         '200':
-          description: flat found
+          description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfFlats'
-        '404':
-          description: requested flat not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /get-ordered-by-time-to-metro/{by-transport}/{desc}:
-    get:
-      tags:
-        - Second Service
-      summary: get a list of all flats sorted by the time to subway on foot (or by transport) in ascending (or descending) order
-      parameters:
-        - name: by-transport
-          in: path
-          description: |-
-            true - get sorted by transport
-            
-            false - get sorted on foot
-          schema:
-            type: boolean
-          required: true
-        - name: desc
-          in: path
-          description: |-
-            true - sorted descending
-            
-            false - sorted ascending
-          schema:
-            type: boolean
-          required: true
-        - $ref: '#/components/parameters/filter'
-      responses:
-        '200':
-          description: flats found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfFlats'
-        '404':
-          description: flats not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Flat'
+        default:
+          $ref: '#/components/responses/defaultError'
 
 components:
   parameters:
@@ -197,14 +141,31 @@ components:
         name: flatId
         in: path
         schema:
-          type: number
+          type: integer
           format: int64
         required: true
+
+      page:
+        name: page
+        in: query
+        schema:
+          type: integer
+          format: int64
+      pageSize:
+        name: pageSize
+        in: query
+        schema:
+          type: integer
+          format: int64
 
       filter:
         name: filter
         in: query
         style: deepObject
+        description: |-
+          Conditions are combined through **AND**
+          
+          **Example**: filter[id]=&lt;eq&gt;3&filter[id]=&lt;gt&gt;100&filter[name]=&lt;substr&gt;test
         schema:
           $ref: '#/components/schemas/FlatFilters'
 
@@ -213,8 +174,31 @@ components:
         in: query
         style: deepObject
         required: true
+        description: |-
+          Conditions are combined through *AND*
+
+          **Example**: filter[id]=&lt;eq&gt;3&filter[id]=&lt;gt&gt;100&filter[name]=&lt;substr&gt;test
         schema:
           $ref: '#/components/schemas/FlatFilters'
+
+      sort:
+        name: sort
+        in: query
+        style: deepObject
+        description: |-
+          **Example**: sort[id]=desc&sort[name]=asc
+        schema:
+          $ref: '#/components/schemas/FlatSorts'
+
+      sortRequired:
+        name: sort
+        in: query
+        style: deepObject
+        required: true
+        description: |-
+          **Example**: sort[id]=desc&sort[name]=asc
+        schema:
+          $ref: '#/components/schemas/FlatSorts'
 
   schemas:
     Flat:
@@ -226,7 +210,6 @@ components:
         - furnish
         - view
         - transport
-        - house
         - price
         - hasBalcony
         - timeToSubwayOnTransport
@@ -248,11 +231,11 @@ components:
           format: date-time
           description: Generated automatically
         area:
-          type: number
+          type: integer
           format: int32
           minimum: 0
         numberOfRooms:
-          type: number
+          type: integer
           format: int32
           minimum: 0
         furnish:
@@ -264,16 +247,16 @@ components:
         house:
           $ref: '#/components/schemas/House'
         price:
-          type: number
+          type: integer
           format: int64
         hasBalcony:
           type: boolean
         timeToSubwayOnTransport:
-          type: number
+          type: integer
           format: int64
           minimum: 1
         timeToSubwayOnFoot:
-          type: number
+          type: integer
           format: int64
           minimum: 1
     ArrayOfFlats:
@@ -293,36 +276,9 @@ components:
           type: integer
           format: int32
 
-    FilterIntegerQuery:
-      type: string
-      pattern: '\[(eq|neq|gt|lt)\](-?\d{1,19})'
-    FilterPositiveIntegerQuery:
-      type: string
-      pattern: '\[(eq|neq|gt|lt)\](\d{1,19})'
-    FilterFloatQuery:
-      type: string
-      pattern: '\[(eq|neq|gt|lt)\](-?([0-9]*[.])?[0-9]+)'
-    FilterBooleanQuery:
-      type: string
-      pattern: '\[(eq|neq)\](true|false)'
-    FilterStringQuery:
-      type: string
-      pattern: '\[(substr)\](.+)'
-    FilterDateQuery:
-      type: string
-      pattern: '\[(eq|neq|gt|lt)\]((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)'
-    FilterFurnishQuery:
-      type: string
-      pattern: '\[(eq|neq)\](DESIGNER|FINE|BAD|LITTLE)'
-    FilterViewQuery:
-      type: string
-      pattern: '\[(eq|neq)\](STREET|YARD|PARK|BAD|GOOD)'
-    FilterTransportQuery:
-      type: string
-      pattern: '\[(eq|neq)\](FEW|NONE|ENOUGH)'
-
     House:
       type: object
+      nullable: true
       properties:
         name:
           type: string
@@ -330,11 +286,12 @@ components:
         year:
           type: integer
           format: int32
-          minimum: 0
+          minimum: 1
           maximum: 808
         numberOfLifts:
           type: integer
           format: int64
+          minimum: 1
     Furnish:
       type: string
       enum:
@@ -356,6 +313,7 @@ components:
         - FEW
         - NONE
         - ENOUGH
+
     Error:
       type: object
       properties:
@@ -401,3 +359,80 @@ components:
             $ref: '#/components/schemas/FilterIntegerQuery'
           timeToSubwayOnFoot:
             $ref: '#/components/schemas/FilterIntegerQuery'
+    FlatSorts:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SortQuery'
+        name:
+          $ref: '#/components/schemas/SortQuery'
+        coordinateX:
+          $ref: '#/components/schemas/SortQuery'
+        coordinateY:
+          $ref: '#/components/schemas/SortQuery'
+        creationDate:
+          $ref: '#/components/schemas/SortQuery'
+        area:
+          $ref: '#/components/schemas/SortQuery'
+        numberOfRooms:
+          $ref: '#/components/schemas/SortQuery'
+        furnish:
+          $ref: '#/components/schemas/SortQuery'
+        view:
+          $ref: '#/components/schemas/SortQuery'
+        transport:
+          $ref: '#/components/schemas/SortQuery'
+        houseName:
+          $ref: '#/components/schemas/SortQuery'
+        houseYear:
+          $ref: '#/components/schemas/SortQuery'
+        houseNumberOfLifts:
+          $ref: '#/components/schemas/SortQuery'
+        price:
+          $ref: '#/components/schemas/SortQuery'
+        hasBalcony:
+          $ref: '#/components/schemas/SortQuery'
+        timeToSubwayOnTransport:
+          $ref: '#/components/schemas/SortQuery'
+        timeToSubwayOnFoot:
+          $ref: '#/components/schemas/SortQuery'
+
+    FilterIntegerQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\](-?\d{1,19})'
+    FilterPositiveIntegerQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\](\d{1,19})'
+    FilterFloatQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\](-?([0-9]*[.])?[0-9]+)'
+    FilterBooleanQuery:
+      type: string
+      pattern: '\[(eq|neq)\](true|false)'
+    FilterStringQuery:
+      type: string
+      pattern: '\[(substr)\](.+)'
+    FilterDateQuery:
+      type: string
+      pattern: '\[(eq|neq|gt|lt)\]((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)'
+    FilterFurnishQuery:
+      type: string
+      pattern: '\[(eq|neq)\](DESIGNER|FINE|BAD|LITTLE)'
+    FilterViewQuery:
+      type: string
+      pattern: '\[(eq|neq)\](STREET|YARD|PARK|BAD|GOOD)'
+    FilterTransportQuery:
+      type: string
+      pattern: '\[(eq|neq)\](FEW|NONE|ENOUGH)'
+
+    SortQuery:
+      type: string
+      pattern: '(desc|asc)'
+
+  responses:
+    defaultError:
+      description: Operation failed due to an error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

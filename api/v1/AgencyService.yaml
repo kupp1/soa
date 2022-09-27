@@ -40,6 +40,10 @@ paths:
             application/json:
               schema:
                 $ref: 'FlatService.yaml#/components/schemas/ArrayOfFlats'
+        '400':
+          $ref: 'FlatService.yaml#/components/responses/badRequestError'
+        '404':
+          $ref: 'FlatService.yaml#/components/responses/notFoundError'
         default:
           $ref: 'FlatService.yaml#/components/responses/defaultError'
 
@@ -77,5 +81,9 @@ paths:
             application/json:
               schema:
                 $ref: 'FlatService.yaml#/components/schemas/ArrayOfFlats'
+        '400':
+          $ref: 'FlatService.yaml#/components/responses/badRequestError'
+        '404':
+          $ref: 'FlatService.yaml#/components/responses/notFoundError'
         default:
           $ref: 'FlatService.yaml#/components/responses/defaultError'

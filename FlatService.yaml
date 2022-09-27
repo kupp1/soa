@@ -399,31 +399,31 @@ components:
 
     FilterIntegerQuery:
       type: string
-      pattern: '\[(eq|neq|gt|lt)\](-?\d{1,19})'
+      pattern: '<(eq|neq|gt|lt)>(-?\d{1,19})'
     FilterPositiveIntegerQuery:
       type: string
-      pattern: '\[(eq|neq|gt|lt)\](\d{1,19})'
+      pattern: '<(eq|neq|gt|lt)>(\d{1,19})'
     FilterFloatQuery:
       type: string
-      pattern: '\[(eq|neq|gt|lt)\](-?([0-9]*[.])?[0-9]+)'
+      pattern: '<(eq|neq|gt|lt)>(-?([0-9]*[.])?[0-9]+)'
     FilterBooleanQuery:
       type: string
-      pattern: '\[(eq|neq)\](true|false)'
+      pattern: '<(eq|neq)>(true|false)'
     FilterStringQuery:
       type: string
-      pattern: '\[(substr)\](.+)'
+      pattern: '<(substr)>(.+)'
     FilterDateQuery:
       type: string
-      pattern: '\[(eq|neq|gt|lt)\]((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)'
+      pattern: '<(eq|neq|gt|lt)>((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)'
     FilterFurnishQuery:
       type: string
-      pattern: '\[(eq|neq)\](DESIGNER|FINE|BAD|LITTLE)'
+      pattern: '<(eq|neq)>(DESIGNER|FINE|BAD|LITTLE)'
     FilterViewQuery:
       type: string
-      pattern: '\[(eq|neq)\](STREET|YARD|PARK|BAD|GOOD)'
+      pattern: '<(eq|neq)>(STREET|YARD|PARK|BAD|GOOD)'
     FilterTransportQuery:
       type: string
-      pattern: '\[(eq|neq)\](FEW|NONE|ENOUGH)'
+      pattern: '<(eq|neq)>(FEW|NONE|ENOUGH)'
 
     SortQuery:
       type: string

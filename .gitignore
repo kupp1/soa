@@ -1,2 +1,4 @@
 /.idea/
-/api/v1/swagger-ui/
+target/
+swagger-ui/
+persistence.xml

@@ -37,6 +37,7 @@ public class Flat {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
     private Date createDate;
 
     @NotNull

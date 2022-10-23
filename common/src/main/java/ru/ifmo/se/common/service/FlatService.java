@@ -1,8 +1,11 @@
-package ru.ifmo.se.common;
+package ru.ifmo.se.common.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import ru.ifmo.se.common.Flat;
 import ru.ifmo.se.common.model.FlatDto;
+import ru.ifmo.se.common.model.FlatPageResponse;
 
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -27,5 +30,18 @@ public class FlatService {
 
     public Flat mapFlatDtoToEntity(FlatDto flatDto) {
         return modelMapper.map(flatDto, Flat.class);
+    }
+
+    public FlatPageResponse mapPageToResponse(Page<Flat> page) {
+        Iterable<Flat> flats = page.getContent();
+        Iterable<FlatDto> flatDtos = mapFlatEntitiesToDtos(flats);
+
+        return FlatPageResponse.builder()
+                .page(page.getNumber())
+                .pageSize(page.getSize())
+                .totalFlats(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .flats(flatDtos)
+                .build();
     }
 }

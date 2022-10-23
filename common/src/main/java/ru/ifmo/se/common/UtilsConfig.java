@@ -21,6 +21,7 @@ public class UtilsConfig {
         modelMapper.typeMap(FlatDto.class, Flat.class).addMappings(mapper -> {
             mapper.map(src -> src.getCoordinates().getX(), Flat::setCoordinateX);
             mapper.map(src -> src.getCoordinates().getY(), Flat::setCoordinateY);
+            mapper.skip(Flat::setCreateDate);
         });
 
         Converter<Flat, CoordinatesDto> flatToCoordinates = ctx -> {

@@ -1,15 +1,23 @@
 package ru.ifmo.se.service.flat;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.se.common.Flat;
-import ru.ifmo.se.common.FlatService;
+import ru.ifmo.se.common.service.FlatService;
 import ru.ifmo.se.common.FlatValidator;
+import ru.ifmo.se.common.model.FlatPageResponse;
 import ru.ifmo.se.common.repository.FlatRepository;
 import ru.ifmo.se.common.model.FlatDto;
+import ru.ifmo.se.common.service.SortQueryProducerService;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/flat")
@@ -17,21 +25,29 @@ public class FlatController {
     private final FlatRepository flatRepository;
     private final FlatValidator flatValidator;
     private final FlatService flatService;
+    private final SortQueryProducerService sortQueryProducerService;
 
     public FlatController(FlatRepository flatRepository,
                           FlatValidator flatValidator,
-                          FlatService flatService) {
+                          FlatService flatService,
+                          SortQueryProducerService sortQueryProducerService) {
         this.flatRepository = flatRepository;
         this.flatValidator = flatValidator;
         this.flatService = flatService;
+        this.sortQueryProducerService = sortQueryProducerService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<FlatDto>> getAllFlats() {
-        Iterable<Flat> flats = flatRepository.findAll();
-        Iterable<FlatDto> flatDtos = flatService.mapFlatEntitiesToDtos(flats);
+    public ResponseEntity<FlatPageResponse> getAllFlats(@RequestParam Integer page,
+                                                        @RequestParam Integer pageSize,
+                                                        @RequestParam Map<String, String> requestParams) {
+        Sort sort = sortQueryProducerService.parseSortQuery(requestParams);
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<Flat> flatPage = flatRepository.findAll(pageable);
 
-        return new ResponseEntity<>(flatDtos, HttpStatus.OK);
+        FlatPageResponse response = flatService.mapPageToResponse(flatPage);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,7 +68,8 @@ public class FlatController {
 
         flatRepository.save(updatedFlat);
 
-        FlatDto response = flatService.mapFlatEntityToDto(updatedFlat);
+        Flat flat = flatRepository.findById(updatedFlat.getId()).get(); // load for creation date
+        FlatDto response = flatService.mapFlatEntityToDto(flat);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

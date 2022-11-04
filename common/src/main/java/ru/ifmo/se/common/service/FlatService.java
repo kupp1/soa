@@ -1,5 +1,6 @@
 package ru.ifmo.se.common.service;
 
+import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -7,11 +8,30 @@ import ru.ifmo.se.common.Flat;
 import ru.ifmo.se.common.model.FlatDto;
 import ru.ifmo.se.common.model.FlatPageResponse;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 public class FlatService {
+    private static final List<String> FIELDS = List.of(
+            "id",
+            "name",
+            "coordinateX",
+            "coordinateY",
+            "createDate",
+            "area",
+            "numberOfRooms",
+            "furnish",
+            "view",
+            "transport",
+            "houseName",
+            "houseYear",
+            "houseNumberOfLifts",
+            "price",
+            "hasBalcony",
+            "timeToSubwayOnTransport",
+            "timeToSubwayOnFoot");
     private final ModelMapper modelMapper;
 
     public FlatService(ModelMapper modelMapper) {
@@ -43,5 +63,9 @@ public class FlatService {
                 .totalPages(page.getTotalPages())
                 .flats(flatDtos)
                 .build();
+    }
+
+    public static List<String> getFlatFields() {
+        return FIELDS;
     }
 }

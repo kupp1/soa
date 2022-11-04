@@ -12,26 +12,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class SortQueryProducerService {
-    private static final List<String> FIELDS = List.of(
-            "id",
-            "name",
-            "coordinateX",
-            "coordinateY",
-            "createDate",
-            "area",
-            "numberOfRooms",
-            "furnish",
-            "view",
-            "transport",
-            "houseName",
-            "houseYear",
-            "houseNumberOfLifts",
-            "price",
-            "hasBalcony",
-            "timeToSubwayOnTransport",
-            "timeToSubwayOnFoot");
     private static final Pattern SORT_PARAM_NAME_PATTERN =
-            Pattern.compile("sort\\[(" + String.join("|", FIELDS) + ")\\]");
+            Pattern.compile("sort\\[(" + String.join("|", FlatService.getFlatFields()) + ")\\]");
     private static final Integer PATTERN_FIELD_NAME_GROUP = 1;
     private static final String ASC = "asc";
     private static final String DESC = "desc";

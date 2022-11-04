@@ -1,13 +1,13 @@
 package ru.ifmo.se.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 import ru.ifmo.se.common.service.FlatService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class FilterQueryService {
     private final static Pattern FILTER_LEFT_VALUE_PATTERN =
-            Pattern.compile("filter\\[(" + String.join("|", FlatService.getFlatFields()) +")]");
-    private final static int FILTER_LEFT_VALUE_FIELD_GROUP = 1;
+            Pattern.compile("filter\\[(?<field>" + String.join("|", FlatService.getFlatFields()) +")]");
+    private final static String FILTER_LEFT_VALUE_FIELD_GROUP = "field";
     private final static Pattern FILTER_RIGHT_VALUE_PATTERN =
-            Pattern.compile("(?:" + String.join("|", OPERATION.asStrings()) + ")");
+            Pattern.compile("<(?<operation>" + String.join("|", OPERATION.asStrings()) + ")>(?<value>.+)");
+    private final static String FILTER_RIGHT_VALUE_OPERATION_GROUP = "operation";
+    private final static String FILTER_RIGHT_VALUE_VALUE_GROUP = "value";
 
     private final CriteriaBuilder criteriaBuilder;
     private final EntityManager entityManager;
@@ -30,26 +32,76 @@ public class FilterQueryService {
     }
 
     public Query generateQuery(Map<String, String> requestParams) {
-        List<FilterClause> clauses = new LinkedList<>();
+        List<FilterClause> filterClauses = new LinkedList<>();
 
         for (var entry : requestParams.entrySet()) {
-            String leftValue = entry.getKey();
-            Matcher leftValueMatcher = FILTER_LEFT_VALUE_PATTERN.matcher(leftValue);
+            String filterLeftValue = entry.getKey();
+            Matcher filterLeftValueMatcher = FILTER_LEFT_VALUE_PATTERN.matcher(filterLeftValue);
 
-            String rightValue = entry.getValue();
-            Matcher rightValueMatcher = FILTER_RIGHT_VALUE_PATTERN.matcher(rightValue);
+            String filterRightValue = entry.getValue();
+            Matcher filterRightValueMatcher = FILTER_RIGHT_VALUE_PATTERN.matcher(filterRightValue);
 
-            if (leftValueMatcher.matches() && rightValueMatcher.matches()) {
-                String field = leftValueMatcher.group(FILTER_LEFT_VALUE_FIELD_GROUP);
+            if (filterLeftValueMatcher.matches() && filterRightValueMatcher.matches()) {
+                String field = filterLeftValueMatcher.group(FILTER_LEFT_VALUE_FIELD_GROUP);
+                String rightValue = filterRightValueMatcher.group(FILTER_RIGHT_VALUE_VALUE_GROUP);
+
+                String operationString = filterRightValueMatcher.group(FILTER_RIGHT_VALUE_OPERATION_GROUP);
+                OPERATION operation = OPERATION.fromString(operationString).orElseThrow(IllegalArgumentException::new);
+
+                FilterClause filterClause = new FilterClause(field, operation, rightValue);
+                filterClauses.add(filterClause);
             }
         }
+
+        return entityManager.createQuery(generateCriteria(filterClauses));
     }
 
-    private CriteriaQuery<Flat> generateCriteria(List<FilterClause> clauses) {
+    private CriteriaQuery<Flat> generateCriteria(List<FilterClause> filterClauses) {
+        CriteriaQuery<Flat> criteriaQuery = criteriaBuilder.createQuery(Flat.class);
+        Root<Flat> root = criteriaQuery.from(Flat.class);
 
+        Predicate[] predicates = filterClauses.stream()
+                .map(filterClause -> generatePredicate(root, filterClause))
+                .toArray(Predicate[]::new);
+
+        criteriaQuery.select(root).where(predicates);
+
+        return criteriaQuery;
+    }
+
+    private Predicate generatePredicate(Root<Flat> root, FilterClause filterClause) {
+        Predicate predicate = null;
+        Path field = root.get(filterClause.getField());
+        String rightValue = filterClause.getRightValue();
+
+        switch (filterClause.operation) {
+            case EQUAL: {
+                predicate = criteriaBuilder.equal(field, rightValue);
+                break;
+            }
+            case NOT_EQUAL: {
+                predicate = criteriaBuilder.notEqual(field, rightValue);
+                break;
+            }
+            case GREATER_THAN: {
+                predicate = criteriaBuilder.greaterThan(field, rightValue);
+                break;
+            }
+            case LESS_THAN: {
+                predicate = criteriaBuilder.lessThan(field, rightValue);
+                break;
+            }
+            case SUBSTR: {
+                predicate = criteriaBuilder.like(field, "%" + rightValue + "%");
+                break;
+            }
+        }
+
+        return predicate;
     }
 
     @Data
+    @AllArgsConstructor
     private static class FilterClause {
         private String field;
         private OPERATION operation;
@@ -57,10 +109,10 @@ public class FilterQueryService {
     }
 
     private enum OPERATION {
-        EQ("eq"),
-        NEQ("neq"),
-        GT("gt"),
-        LT("lt"),
+        EQUAL("eq"),
+        NOT_EQUAL("neq"),
+        GREATER_THAN("gt"),
+        LESS_THAN("lt"),
         SUBSTR("substr");
 
         private final String string;

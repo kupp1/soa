@@ -1,4 +1,4 @@
-package ru.ifmo.se.common;
+package ru.ifmo.se.common.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

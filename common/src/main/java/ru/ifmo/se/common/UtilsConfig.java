@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.model.CoordinatesDto;
 import ru.ifmo.se.common.model.FlatDto;
 

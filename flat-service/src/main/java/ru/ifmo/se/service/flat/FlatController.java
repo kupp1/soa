@@ -4,18 +4,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.ifmo.se.common.Flat;
+import ru.ifmo.se.common.FilterQueryService;
+import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.service.FlatService;
 import ru.ifmo.se.common.FlatValidator;
 import ru.ifmo.se.common.model.FlatPageResponse;
 import ru.ifmo.se.common.repository.FlatRepository;
 import ru.ifmo.se.common.model.FlatDto;
-import ru.ifmo.se.common.service.SortQueryProducerService;
+import ru.ifmo.se.common.service.SortQueryService;
 
 import java.util.Map;
 
@@ -25,25 +27,29 @@ public class FlatController {
     private final FlatRepository flatRepository;
     private final FlatValidator flatValidator;
     private final FlatService flatService;
-    private final SortQueryProducerService sortQueryProducerService;
+    private final SortQueryService sortQueryService;
+    private final FilterQueryService filterQueryService;
 
     public FlatController(FlatRepository flatRepository,
                           FlatValidator flatValidator,
                           FlatService flatService,
-                          SortQueryProducerService sortQueryProducerService) {
+                          SortQueryService sortQueryService,
+                          FilterQueryService filterQueryService) {
         this.flatRepository = flatRepository;
         this.flatValidator = flatValidator;
         this.flatService = flatService;
-        this.sortQueryProducerService = sortQueryProducerService;
+        this.sortQueryService = sortQueryService;
+        this.filterQueryService = filterQueryService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FlatPageResponse> getAllFlats(@RequestParam Integer page,
                                                         @RequestParam Integer pageSize,
                                                         @RequestParam Map<String, String> requestParams) {
-        Sort sort = sortQueryProducerService.parseSortQuery(requestParams);
+        Sort sort = sortQueryService.parseSortQuery(requestParams);
+        Specification<Flat> specification = filterQueryService.generateSpecification(requestParams);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<Flat> flatPage = flatRepository.findAll(pageable);
+        Page<Flat> flatPage = flatRepository.findAll(specification, pageable);
 
         FlatPageResponse response = flatService.mapPageToResponse(flatPage);
 

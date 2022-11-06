@@ -1,10 +1,9 @@
 package ru.ifmo.se.common.service;
 
-import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import ru.ifmo.se.common.Flat;
+import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.model.FlatDto;
 import ru.ifmo.se.common.model.FlatPageResponse;
 

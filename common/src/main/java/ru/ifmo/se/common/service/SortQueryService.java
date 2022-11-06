@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class SortQueryProducerService {
+public class SortQueryService {
     private static final Pattern SORT_PARAM_NAME_PATTERN =
             Pattern.compile("sort\\[(" + String.join("|", FlatService.getFlatFields()) + ")\\]");
     private static final Integer PATTERN_FIELD_NAME_GROUP = 1;

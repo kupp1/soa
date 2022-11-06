@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
+import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.exception.BadEntityException;
 import ru.ifmo.se.common.exception.InvalidEntityIdException;
 import ru.ifmo.se.common.exception.NoEntitiesException;

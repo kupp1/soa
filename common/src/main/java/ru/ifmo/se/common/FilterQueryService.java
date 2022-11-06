@@ -2,7 +2,12 @@ package ru.ifmo.se.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.ifmo.se.common.entity.Flat;
+import ru.ifmo.se.common.model.Furnish;
+import ru.ifmo.se.common.model.Transport;
+import ru.ifmo.se.common.model.View;
 import ru.ifmo.se.common.service.FlatService;
 
 import javax.persistence.EntityManager;
@@ -32,6 +37,24 @@ public class FilterQueryService {
     }
 
     public Query generateQuery(Map<String, String> requestParams) {
+        return entityManager.createQuery(generateCriteria(generateFilterClauses(requestParams)));
+    }
+
+    public Specification<Flat> generateSpecification(Map<String, String> requestParams) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                generateHighLevelPredicate(generateFilterClauses(requestParams), root, criteriaBuilder);
+    }
+
+    private CriteriaQuery<Flat> generateCriteria(List<FilterClause> filterClauses) {
+        CriteriaQuery<Flat> criteriaQuery = criteriaBuilder.createQuery(Flat.class);
+        Root<Flat> root = criteriaQuery.from(Flat.class);
+
+        Predicate predicate = generateHighLevelPredicate(filterClauses, root, criteriaBuilder);
+        criteriaQuery.select(root).where(predicate);
+        return criteriaQuery;
+    }
+
+    private List<FilterClause> generateFilterClauses(Map<String, String> requestParams) {
         List<FilterClause> filterClauses = new LinkedList<>();
 
         for (var entry : requestParams.entrySet()) {
@@ -53,51 +76,74 @@ public class FilterQueryService {
             }
         }
 
-        return entityManager.createQuery(generateCriteria(filterClauses));
+        return filterClauses;
     }
 
-    private CriteriaQuery<Flat> generateCriteria(List<FilterClause> filterClauses) {
-        CriteriaQuery<Flat> criteriaQuery = criteriaBuilder.createQuery(Flat.class);
-        Root<Flat> root = criteriaQuery.from(Flat.class);
-
+    private Predicate generateHighLevelPredicate(List<FilterClause> filterClauses, Root<Flat> root,
+                                                 CriteriaBuilder criteriaBuilder) {
         Predicate[] predicates = filterClauses.stream()
                 .map(filterClause -> generatePredicate(root, filterClause))
                 .toArray(Predicate[]::new);
 
-        criteriaQuery.select(root).where(predicates);
-
-        return criteriaQuery;
+        return criteriaBuilder.and(predicates);
     }
 
     private Predicate generatePredicate(Root<Flat> root, FilterClause filterClause) {
         Predicate predicate = null;
-        Path field = root.get(filterClause.getField());
-        String rightValue = filterClause.getRightValue();
+        String fieldString = filterClause.getField();
+        String rightValueString = filterClause.getRightValue();
+        Path field = root.get(fieldString);
+        Object typedRightValue = getTypedRightValue(rightValueString, fieldString);
 
         switch (filterClause.operation) {
             case EQUAL: {
-                predicate = criteriaBuilder.equal(field, rightValue);
+                predicate = criteriaBuilder.equal(field, typedRightValue);
                 break;
             }
             case NOT_EQUAL: {
-                predicate = criteriaBuilder.notEqual(field, rightValue);
+                predicate = criteriaBuilder.notEqual(field, typedRightValue);
                 break;
             }
             case GREATER_THAN: {
-                predicate = criteriaBuilder.greaterThan(field, rightValue);
+                predicate = criteriaBuilder.greaterThan(field, rightValueString);
                 break;
             }
             case LESS_THAN: {
-                predicate = criteriaBuilder.lessThan(field, rightValue);
+                predicate = criteriaBuilder.lessThan(field, rightValueString);
                 break;
             }
             case SUBSTR: {
-                predicate = criteriaBuilder.like(field, "%" + rightValue + "%");
+                predicate = criteriaBuilder.like(field, "%" + rightValueString + "%");
                 break;
             }
         }
 
         return predicate;
+    }
+
+    private Object getTypedRightValue(String rightValue,  String path) {
+        Object typed = rightValue;
+
+        switch (path) {
+            case "furnish": {
+                typed = Furnish.valueOf(rightValue);
+                break;
+            }
+            case "view": {
+                typed = View.valueOf(rightValue);
+                break;
+            }
+            case "transport": {
+                typed = Transport.valueOf(rightValue);
+                break;
+            }
+            case "hasBalcony": {
+                typed = Boolean.valueOf(rightValue);
+                break;
+            }
+        }
+
+        return typed;
     }
 
     @Data

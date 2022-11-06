@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.se.common.FilterQueryService;
 import ru.ifmo.se.common.entity.Flat;
@@ -19,6 +20,7 @@ import ru.ifmo.se.common.repository.FlatRepository;
 import ru.ifmo.se.common.model.FlatDto;
 import ru.ifmo.se.common.service.SortQueryService;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -43,6 +45,7 @@ public class FlatController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<FlatPageResponse> getAllFlats(@RequestParam Integer page,
                                                         @RequestParam Integer pageSize,
                                                         @RequestParam Map<String, String> requestParams) {
@@ -57,6 +60,7 @@ public class FlatController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<FlatDto> createFlat(@RequestBody FlatDto newFlatDto) {
         Flat newFlat = flatService.mapFlatDtoToEntity(newFlatDto);
         flatValidator.checkFields(newFlat);
@@ -67,6 +71,7 @@ public class FlatController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<FlatDto> updateFlat(@RequestBody FlatDto updatedFlatDto) {
         Flat updatedFlat = flatService.mapFlatDtoToEntity(updatedFlatDto);
         flatValidator.checkFields(updatedFlat);
@@ -79,7 +84,20 @@ public class FlatController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ResponseEntity<Iterable<FlatDto>> deleteFilteredFlats(@RequestParam Map<String, String> requestParams) {
+        Specification<Flat> specification = filterQueryService.generateSpecification(requestParams);
+        List<Flat> flatsToDelete = flatRepository.findAll(specification);
+        Iterable<FlatDto> response = flatService.mapFlatEntitiesToDtos(flatsToDelete);
+
+        flatRepository.deleteAll(flatsToDelete);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping(value = "/{flatId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<FlatDto> getFlatById(@PathVariable Long flatId) {
         flatValidator.checkId(flatId);
         Flat flat = flatRepository.findById(flatId).get(); // checked above
@@ -89,6 +107,7 @@ public class FlatController {
     }
 
     @DeleteMapping(value = "/{flatId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<FlatDto> deleteFlat(@PathVariable Long flatId) {
         flatValidator.checkId(flatId);
         Flat flat = flatRepository.findById(flatId).get(); // checked above
@@ -100,6 +119,7 @@ public class FlatController {
     }
 
     @GetMapping(value = "/min-area", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<FlatDto> getFlatWithSmallestArea() {
         flatValidator.checkFlatsExists();
 

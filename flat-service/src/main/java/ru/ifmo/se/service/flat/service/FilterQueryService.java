@@ -1,4 +1,4 @@
-package ru.ifmo.se.common;
+package ru.ifmo.se.service.flat.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,6 @@ import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.model.Furnish;
 import ru.ifmo.se.common.model.Transport;
 import ru.ifmo.se.common.model.View;
-import ru.ifmo.se.common.service.FlatService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;

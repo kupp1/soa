@@ -1,4 +1,4 @@
-package ru.ifmo.se.common.repository;
+package ru.ifmo.se.service.flat.repository;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;

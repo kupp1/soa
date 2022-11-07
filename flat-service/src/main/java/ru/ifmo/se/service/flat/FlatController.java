@@ -11,14 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.ifmo.se.common.FilterQueryService;
+import ru.ifmo.se.common.exception.NoEntitiesException;
+import ru.ifmo.se.service.flat.service.FilterQueryService;
 import ru.ifmo.se.common.entity.Flat;
-import ru.ifmo.se.common.service.FlatService;
-import ru.ifmo.se.common.FlatValidator;
+import ru.ifmo.se.service.flat.service.FlatService;
+import ru.ifmo.se.service.flat.service.FlatValidator;
 import ru.ifmo.se.common.model.FlatPageResponse;
-import ru.ifmo.se.common.repository.FlatRepository;
+import ru.ifmo.se.service.flat.repository.FlatRepository;
 import ru.ifmo.se.common.model.FlatDto;
-import ru.ifmo.se.common.service.SortQueryService;
+import ru.ifmo.se.service.flat.service.SortQueryService;
 
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,9 @@ public class FlatController {
         Specification<Flat> specification = filterQueryService.generateSpecification(requestParams);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<Flat> flatPage = flatRepository.findAll(specification, pageable);
+        if (flatPage.getTotalElements() == 0) {
+            throw new NoEntitiesException("No such flats");
+        }
 
         FlatPageResponse response = flatService.mapPageToResponse(flatPage);
 

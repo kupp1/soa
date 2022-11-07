@@ -7,7 +7,6 @@ import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
 
 import javax.persistence.EntityManagerFactory;
 
-@EnableJpaRepositories(basePackages = {"ru.ifmo.se.common.repository"})
 public abstract class AbstractJpaConfig {
     @Bean
     public LocalEntityManagerFactoryBean entityManagerFactory() {

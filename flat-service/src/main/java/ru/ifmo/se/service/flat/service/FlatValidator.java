@@ -1,4 +1,4 @@
-package ru.ifmo.se.common;
+package ru.ifmo.se.service.flat.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.exception.BadEntityException;
 import ru.ifmo.se.common.exception.InvalidEntityIdException;
 import ru.ifmo.se.common.exception.NoEntitiesException;
-import ru.ifmo.se.common.repository.FlatRepository;
+import ru.ifmo.se.service.flat.repository.FlatRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;

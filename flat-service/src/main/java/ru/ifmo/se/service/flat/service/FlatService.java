@@ -1,4 +1,4 @@
-package ru.ifmo.se.common.service;
+package ru.ifmo.se.service.flat.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;

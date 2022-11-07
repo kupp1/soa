@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.ifmo.se.common.AbstractJpaConfig;
 
 @Configuration
+@EnableJpaRepositories(basePackages = {"ru.ifmo.se.service.flat.repository"})
 public class JpaConfig extends AbstractJpaConfig {
 }

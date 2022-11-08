@@ -11,4 +11,9 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer.addPathPrefix("/api/v1", HandlerTypePredicate.forAnnotation(Controller.class, RestController.class));
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("*");
+    }
 }

@@ -1,16 +1,9 @@
-const CATALOG_SERVICE = "https://localhost:49726/first-service"
-const AGENCY_SERVICE = "https://localhost:49729/second-service"
-const SECRET_SERVICE = "https://localhost:49728/third-service"
+const FLATS_SERVICE = "https://localhost:47232"
+const AGENCY_SERVICE = "https://localhost:56852"
 
 
-export const FLATS_API = `${CATALOG_SERVICE}/catalog/flats`
-export const HEIGHT_SUM_API = `${CATALOG_SERVICE}/catalog/flats/height-sum`
-export const COUNT_BY_NEW_API = `${CATALOG_SERVICE}/catalog/flats/count-by-new`
-export const GET_WITH_MAX_ID_API = `${CATALOG_SERVICE}/catalog/flats/max-id`
+export const FLATS_API = `${FLATS_SERVICE}/api/v1/flat`
+export const MIN_AREA_API = `${FLATS_SERVICE}/api/v1/flat/min-area`
 
-export const CALCULATE_PRICES_SUM = `${AGENCY_SERVICE}/agency/get-total-cost`
-export const GET_CHEAPEST = `${AGENCY_SERVICE}/agency/get-cheapest`
-
-export const COUNTRIES_API = `${SECRET_SERVICE}/secret/countries`
-export const HOUSES_API = `${SECRET_SERVICE}/secret`
-export const SPONSOR_API = `${SECRET_SERVICE}/secret/donate`
+export const WITH_BALCONY_API = `${AGENCY_SERVICE}/api/v1/agency/find-with-balcony`
+export const ORDERED_TO_METRO = `${AGENCY_SERVICE}/api/v1/agency/get-ordered-by-time-to-metro`

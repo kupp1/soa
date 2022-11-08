@@ -22,13 +22,13 @@ export const getColumnSearchProps = (dataIndex, searchFunction) => ({
                                 setSelectedKeys(selectedKeys)
                             }
                         }
+                        dropdownMatchSelectWidth={50}
                     >
                         <Option value="eq">=</Option>
                         <Option value="neq">&ne;</Option>
                         <Option value="gt">&gt;</Option>
                         <Option value="lt">&lt;</Option>
-                        <Option value="gte">&ge;</Option>
-                        <Option value="lte">&le;</Option>
+                        <Option value="substr">LIKE</Option>
                     </Select>
                 </Col>
                 <Col>

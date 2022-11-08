@@ -1,9 +1,11 @@
 import {Divider, Layout, Space} from "antd";
+import AgencyTable from "../components/tables/agency-table";
 import CustomHeader from "../components/general/custom-header";
+import FlatsTable from "../components/tables/flats-table";
+import {ModifyFlatForm} from "../components/forms/modify-flat-form";
+import {DeleteFlatForm} from "../components/forms/delete-flat-form";
 import CustomFooter from "../components/general/custom-footer";
 import {Content} from "antd/es/layout/layout";
-import {GetTotalCostModal} from "../components/fast-response/get-total-cost-modal";
-import {GetCheapestModal} from "../components/fast-response/get-cheapest-modal";
 
 export function AgencyPage() {
     return(
@@ -13,8 +15,9 @@ export function AgencyPage() {
                     selectedMenuItem={'agency'}
                 />
                 <Content>
+                    <AgencyTable pageSize={5}/>
+                    <Divider/>
                     <Space style={{
-                        marginTop: 100,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -22,10 +25,8 @@ export function AgencyPage() {
                     }}
                            size={0}
                     >
-                        <GetTotalCostModal/>
-                        <Divider style={{minWidth:600}}/>
-                        <GetCheapestModal/>
                     </Space>
+
                 </Content>
                 <CustomFooter/>
             </Layout>

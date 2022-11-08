@@ -21,14 +21,12 @@ export function ModifyFlatForm() {
         axios
             .get(`${FLATS_API}/${e['id']}`)
             .then((response) => {
-                const parsedResponse = parseFlatFromXML(response.data)
-                setInitialValues(parsedResponse)
+                setInitialValues(response.data)
                 setIsModifyFlatModalOpen(true);
                 setFlatId(e['id'])
             })
             .catch((err) => {
-                let error = parseError(err.response.data)
-                enqueueSnackbar(error.message, {
+                enqueueSnackbar(err.response.data.messages[0], {
                     autoHideDuration: 5000,
                     variant: "error"
                 })
@@ -36,17 +34,14 @@ export function ModifyFlatForm() {
     };
 
     const handleFormSubmit = (e) => {
-        const body = parseFlatToXML(e);
+        const body = e;
+        console.log(e)
 
         if (flatId) {
-            axios.put(`${FLATS_API}/${flatId}`, body, {
-                    headers: {
-                        'content-type': 'application/xml'
-                    }
-                }
+            axios.put(`${FLATS_API}`, body, {}
             )
                 .then((response) => {
-                    const newFlat = parseFlatFromXML(response.data)
+                    const newFlat = response.data
                     enqueueSnackbar("Successfully modified flat with id: " + newFlat.id, {
                         autoHideDuration: 5000,
                         variant: "success"
@@ -54,8 +49,7 @@ export function ModifyFlatForm() {
                     setIsModifyFlatModalOpen(false);
                 })
                 .catch((err) => {
-                    let error = parseError(err.response.data)
-                    enqueueSnackbar(error.message, {
+                    enqueueSnackbar(err.response.data.messages[0], {
                         autoHideDuration: 5000,
                         variant: "error"
                     })

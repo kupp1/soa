@@ -1,4 +1,4 @@
-import {Form, Input, InputNumber, Modal, Radio, Select} from "antd";
+import {Checkbox, Form, Input, InputNumber, Modal, Radio, Select} from "antd";
 import {useForm} from "antd/es/form/Form";
 import {useEffect} from "react";
 
@@ -28,21 +28,42 @@ export default function FlatForm({formVisible, onCancel, onFinish, title, initia
                     layout="horizontal"
                 >
                     <Form.Item
-                        label="Price"
-                        name="price"
+                        name="id"
+                        hidden={true}
+                    >
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Name"
+                        name="name"
                         rules={[
-                            {required: true, message: 'Please input price!'},
-                            () => ({
-                                validator(_, value) {
-                                    if (value >= 0) {
-                                        return Promise.resolve();
-                                    }
-                                    return Promise.reject(new Error('Price must be greater than 0!'));
-                                },
-                            }),
+                            {required: true, message: 'Please input name!'},
                         ]}
                     >
-                        <InputNumber/>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item label="Coordinates">
+                        <Input.Group>
+                            <Form.Item
+                                label="X"
+                                name={["coordinates", "x"]}
+                                rules={[
+                                    {required: true, message: 'Please input X!'}
+                                ]}
+                            >
+                                <InputNumber/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Y"
+                                name={["coordinates", "y"]}
+                                rules={[
+                                    {required: true, message: 'Please input y!'},
+                                ]}
+                            >
+                                <InputNumber/>
+                            </Form.Item>
+                        </Input.Group>
                     </Form.Item>
                     <Form.Item
                         label="Area"
@@ -79,99 +100,46 @@ export default function FlatForm({formVisible, onCancel, onFinish, title, initia
                         <InputNumber/>
                     </Form.Item>
                     <Form.Item
-                        label="Transport"
-                        name="transport"
+                        label="Furnish"
+                        name="furnish"
                         rules={[
-                            {required: true, message: 'Please input transport!'}
+                            {required: true, message: 'Please input furnish!'}
                         ]}
                     >
                         <Select>
-                            <Select.Option value="few">Few</Select.Option>
-                            <Select.Option value="none">None</Select.Option>
-                            <Select.Option value="little">Little</Select.Option>
-                            <Select.Option value="normal">Normal</Select.Option>
-                            <Select.Option value="enough">Enough</Select.Option>
+                            <Select.Option value="DESIGNER">DESIGNER</Select.Option>
+                            <Select.Option value="FINE">FINE</Select.Option>
+                            <Select.Option value="BAD">BAD</Select.Option>
+                            <Select.Option value="LITTLE">LITTLE</Select.Option>
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        label="New"
-                        name="new"
-                        rules={[{required: true, message: 'Please select if flat is new!'}]}
-                    >
-                        <Radio.Group>
-                            <Radio value="true">Yes</Radio>
-                            <Radio value="false">No</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item
-                        label="Height"
-                        name="height"
+                        label="View"
+                        name="view"
                         rules={[
-                            {required: false, message: 'Please input height!'},
-                            () => ({
-                                validator(_, value) {
-                                    if (!value) {
-                                        return Promise.resolve();
-                                    }
-                                    if (Number.isInteger(Number(value)) && value >= 0) {
-                                        return Promise.resolve();
-                                    }
-                                    return Promise.reject(new Error('Height must be integer greater than 0!'));
-                                },
-                            }),
+                            {required: true, message: 'Please input view!'}
                         ]}
                     >
-                        <InputNumber/>
+                        <Select>
+                            <Select.Option value="STREET">STREET</Select.Option>
+                            <Select.Option value="YARD">YARD</Select.Option>
+                            <Select.Option value="PARK">PARK</Select.Option>
+                            <Select.Option value="BAD">BAD</Select.Option>
+                            <Select.Option value="GOOD">GOOD</Select.Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item
-                        label="Name"
-                        name="name"
+                        label="Transport"
+                        name="transport"
                         rules={[
-                            {required: true, message: 'Please input name!'},
+                            {required: true, message: 'Please input view!'}
                         ]}
                     >
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label="Coordinates">
-                        <Input.Group>
-                            <Form.Item
-                                label="X"
-                                name={["coordinates", "x"]}
-                                rules={[
-                                    {required: true, message: 'Please input X!'},
-                                    () => ({
-                                        validator(_, value) {
-                                            if (value >= -292) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(new Error('X must be greater than -292!'));
-                                        },
-                                    }),
-                                ]}
-                            >
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item
-                                label="Y"
-                                name={["coordinates", "y"]}
-                                rules={[
-                                    {required: true, message: 'Please input y!'},
-                                    () => ({
-                                        validator(_, value) {
-                                            if (!value) {
-                                                return Promise.resolve();
-                                            }
-                                            if (Number.isInteger(Number(value)) && value >= -747) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(new Error('Y must be integer greater than -747!'));
-                                        },
-                                    }),
-                                ]}
-                            >
-                                <InputNumber/>
-                            </Form.Item>
-                        </Input.Group>
+                        <Select>
+                            <Select.Option value="FEW">FEW</Select.Option>
+                            <Select.Option value="NONE">NONE</Select.Option>
+                            <Select.Option value="ENOUGH">ENOUGH</Select.Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item label="House">
                         <Input.Group>
@@ -179,7 +147,7 @@ export default function FlatForm({formVisible, onCancel, onFinish, title, initia
                                 label="Name"
                                 name={["house", "name"]}
                                 rules={[
-                                    {required: true, message: 'Please input name!'},
+                                    {required: false, message: 'Please input name!'},
                                 ]}
                             >
                                 <Input/>
@@ -188,36 +156,13 @@ export default function FlatForm({formVisible, onCancel, onFinish, title, initia
                                 label="Year"
                                 name={["house", "year"]}
                                 rules={[
-                                    {required: false, message: 'Please input year!'},
+                                    {required: true, message: 'Please input year!'},
                                     () => ({
                                         validator(_, value) {
-                                            if (!value) {
+                                            if (Number.isInteger(Number(value)) && value >= 0 && value <= 808) {
                                                 return Promise.resolve();
                                             }
-                                            if (Number.isInteger(Number(value)) && value >= 0) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(new Error('Year must be integer greater than 0!'));
-                                        },
-                                    }),
-                                ]}
-                            >
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item
-                                label="Number of floors"
-                                name={["house", "numberOfFloors"]}
-                                rules={[
-                                    {required: true, message: 'Please input number of floors!'},
-                                    () => ({
-                                        validator(_, value) {
-                                            if (!value) {
-                                                return Promise.resolve();
-                                            }
-                                            if (Number.isInteger(Number(value)) && value >= 0) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(new Error('Number of floors must be integer greater than 0!'));
+                                            return Promise.reject(new Error('Year must be in [1, 808]!'));
                                         },
                                     }),
                                 ]}
@@ -228,16 +173,80 @@ export default function FlatForm({formVisible, onCancel, onFinish, title, initia
                                 label="Number of lifts"
                                 name={["house", "numberOfLifts"]}
                                 rules={[
-                                    {required: false, message: 'Please input number of lifts!'},
+                                    {required: true, message: 'Please input number of lifts!'},
                                     () => ({
                                         validator(_, value) {
-                                            if (!value) {
-                                                return Promise.resolve();
-                                            }
                                             if (Number.isInteger(Number(value)) && value >= 0) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('Number of lifts must be integer greater than 0!'));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <InputNumber/>
+                            </Form.Item>
+                        </Input.Group>
+                    </Form.Item>
+                    <Form.Item
+                        label="Price"
+                        name="price"
+                        rules={[
+                            {required: true, message: 'Please input price!'},
+                            () => ({
+                                validator(_, value) {
+                                    if (value >= 0) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('Price must be greater than 0!'));
+                                },
+                            }),
+                        ]}
+                    >
+                        <InputNumber/>
+                    </Form.Item>
+                    <Form.Item
+                        label="Has Balcony"
+                        name="hasBalcony"
+                        rules={[
+                            {required: true, message: 'Please input has balcony!'}
+                        ]}
+                    >
+                        <Select>
+                            <Select.Option value={true}>True</Select.Option>
+                            <Select.Option value={false}>False</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Time to subway">
+                        <Input.Group>
+                            <Form.Item
+                                label="On Foot"
+                                name={["timeToSubwayOnFoot"]}
+                                rules={[
+                                    {required: true, message: 'Please input time to subway on foot!'},
+                                    () => ({
+                                        validator(_, value) {
+                                            if (Number.isInteger(Number(value)) && value >= 0) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Must be greater than 0!'));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input/>
+                            </Form.Item>
+                            <Form.Item
+                                label="On Transport"
+                                name={["timeToSubwayOnTransport"]}
+                                rules={[
+                                    {required: true, message: 'Please input time to subway on transport!'},
+                                    () => ({
+                                        validator(_, value) {
+                                            if (Number.isInteger(Number(value)) && value >= 0) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Must be greater than 0!'));
                                         },
                                     }),
                                 ]}

@@ -11,7 +11,6 @@ export default function CustomFooter() {
                     width: '100%',
                 }}
             >
-                SOA lab created by Artem Bakin from group P34101 ©2022
             </Footer>
         </>
     )

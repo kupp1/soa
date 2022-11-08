@@ -54,9 +54,6 @@ public class FlatController {
         Specification<Flat> specification = filterQueryService.generateSpecification(requestParams);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<Flat> flatPage = flatRepository.findAll(specification, pageable);
-        if (flatPage.getTotalElements() == 0) {
-            throw new NoEntitiesException("No such flats");
-        }
 
         FlatPageResponse response = flatService.mapPageToResponse(flatPage);
 

@@ -25,25 +25,19 @@ export function AddFlatForm() {
     };
 
     const onFormSubmit = (e) => {
-        const body = parseFlatToXML(e);
+        console.log(e)
 
-        axios.post(FLATS_API, body, {
-                headers: {
-                    'content-type': 'application/xml'
-                }
-            }
+        axios.post(FLATS_API, e, {}
         )
             .then((response) => {
-                const newFlat = parseFlatFromXML(response.data)
-                enqueueSnackbar("Created new flat with id: " + newFlat.id, {
+                enqueueSnackbar("Created new flat with id: " + response.data.id, {
                     autoHideDuration: 5000,
                     variant: "success"
                 })
                 setIsAddFlatModalOpen(false);
             })
             .catch((err) => {
-                let error = parseError(err.response.data)
-                enqueueSnackbar(error.message, {
+                enqueueSnackbar(err.response.data.messages[0], {
                     autoHideDuration: 5000,
                     variant: "error"
                 })
@@ -53,13 +47,13 @@ export function AddFlatForm() {
     return (
         <>
             <Button type="primary" onClick={showModifyFlatModal} style={{width: 150, flex: 1}}>
-                Add new flat
+                Add
             </Button>
             <FlatForm
                 formVisible={isAddFlatModalOpen}
                 onCancel={handleAddFlatCancel}
                 onFinish={onFormSubmit}
-                title="Modify flat"
+                title="Add new flat"
             />
         </>
     )

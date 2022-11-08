@@ -1,7 +1,7 @@
-export function filtersToLHSBrackets(filters) {
+export function parseFilters(filters) {
     return Object.keys(filters).map((key) => {
             if (key && filters[key]) {
-                return String.prototype.concat(key, "[", filters[key][0], "]=", filters[key][1])
+                return { field: key, clause: `<${filters[key][0]}>${filters[key][1]}` }
             }
         }
     ).filter((element) => {
@@ -9,10 +9,10 @@ export function filtersToLHSBrackets(filters) {
     })
 }
 
-export function filtersMapToLHSBrackets(filtersMap) {
+export function parseMapFilters(filtersMap) {
     return Array.from(filtersMap.keys()).map((key) => {
             if (key && filtersMap.get(key)) {
-                return String.prototype.concat(key, "[", filtersMap.get(key)[0], "]=", filtersMap.get(key)[1])
+                return { field: key, clause:  `<${filtersMap.get(key)[0]}>${filtersMap.get(key)[1]}` }
             }
         }
     ).filter((element) => {
@@ -21,5 +21,6 @@ export function filtersMapToLHSBrackets(filtersMap) {
 }
 
 export function parseSorterToQueryParam(sort) {
-    return String.prototype.concat((sort.order === 'ascend' ? '' : '-'), sort.columnKey);
+    const order = sort.order === "ascend" ? "asc" : "desc";
+    return { field: sort.columnKey, order: order}
 }

@@ -21,7 +21,7 @@ import java.security.cert.CertificateException;
 
 @Configuration
 public class WebConfig extends AbstractWebConfig {
-    private static final String KEY_STORE_FILE = "C:\\Application\\jetty-distribution-9.4.49.v20220914\\cacerts.jks";
+    private static final String KEY_STORE_FILE = "/home/studs/s269359/jetty-distribution-9.4.49.v20220914/test/etc/keystore";
     private static final String KEY_STORE_PASSWORD = "changeit";
 
     @Bean

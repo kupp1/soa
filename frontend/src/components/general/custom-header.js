@@ -7,32 +7,23 @@ const {Header} = Layout;
 export default function CustomHeader({selectedMenuItem}) {
     const menuItems = [
         {
-            icon: <TableOutlined />,
+            icon: null,
             label: (
-                <Link to="/catalog">
-                    Catalog
+                <Link to="/flat">
+                    Flats Service
                 </Link>
             ),
             key: 'catalog',
         },
         {
-            icon: <CalculatorOutlined />,
+            icon: null,
             label: (
                 <Link to="/agency">
-                    Agency
+                    Agency Service
                 </Link>
             ),
             key: 'agency',
-        },
-        {
-            icon: <LockOutlined />,
-            label: (
-                <Link to="/secret">
-                    Secret
-                </Link>
-            ),
-            key: 'secret',
-        },
+        }
     ];
 
     return(

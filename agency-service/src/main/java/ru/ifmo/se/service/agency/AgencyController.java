@@ -85,6 +85,9 @@ public class AgencyController {
                 throw new IllegalStateException("Unable to get remote flats");
             }
         }
+        if (response.getBody().getTotalFlats() == 0) {
+            throw new NoEntitiesException("No such flats");
+        }
 
         return response.getBody();
     }

@@ -20,8 +20,8 @@ public class AgencyController {
 
     private final RestTemplate restTemplate;
 
-    public AgencyController(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public AgencyController() {
+        this.restTemplate = new RestTemplate();
     }
 
     @GetMapping

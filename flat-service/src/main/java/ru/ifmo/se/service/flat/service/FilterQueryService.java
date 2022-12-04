@@ -1,5 +1,14 @@
 package ru.ifmo.se.service.flat.service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
@@ -9,9 +18,6 @@ import ru.ifmo.se.common.model.Furnish;
 import ru.ifmo.se.common.model.Transport;
 import ru.ifmo.se.common.model.View;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

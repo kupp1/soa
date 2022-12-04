@@ -1,5 +1,8 @@
 package ru.ifmo.se.service.flat.service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.collections4.IterableUtils;
@@ -10,9 +13,6 @@ import ru.ifmo.se.common.exception.InvalidEntityIdException;
 import ru.ifmo.se.common.exception.NoEntitiesException;
 import ru.ifmo.se.service.flat.repository.FlatRepository;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

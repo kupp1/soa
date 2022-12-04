@@ -1,5 +1,7 @@
-package ru.ifmo.se.common;
+package ru.ifmo.se.service.flat;
 
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -8,9 +10,6 @@ import org.springframework.context.annotation.Scope;
 import ru.ifmo.se.common.entity.Flat;
 import ru.ifmo.se.common.model.CoordinatesDto;
 import ru.ifmo.se.common.model.FlatDto;
-
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 
 @Configuration
 public class UtilsConfig {

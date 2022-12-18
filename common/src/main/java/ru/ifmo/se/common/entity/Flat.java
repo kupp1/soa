@@ -17,8 +17,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.CreatedDate;
 import ru.ifmo.se.common.model.Furnish;
 import ru.ifmo.se.common.model.Transport;
 import ru.ifmo.se.common.model.View;
@@ -47,7 +47,7 @@ public class Flat {
     @NotNull
     private Integer coordinateY;
 
-    @CreationTimestamp
+    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
     private Date createDate;

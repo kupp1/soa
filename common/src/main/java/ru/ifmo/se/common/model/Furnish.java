@@ -1,6 +1,8 @@
 package ru.ifmo.se.common.model;
 
-public enum Furnish {
+import java.io.Serializable;
+
+public enum Furnish implements Serializable {
     DESIGNER,
     FINE,
     BAD,

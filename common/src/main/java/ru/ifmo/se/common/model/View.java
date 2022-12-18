@@ -1,6 +1,8 @@
 package ru.ifmo.se.common.model;
 
-public enum View {
+import java.io.Serializable;
+
+public enum View implements Serializable {
     STREET,
     YARD,
     PARK,

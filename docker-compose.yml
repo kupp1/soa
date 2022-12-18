@@ -33,6 +33,19 @@ services:
       - "12443:443"
       - "24848:4848"
 
+  agency-serice-web:
+    build: agency-service-web
+    depends_on:
+      - agency-service-ejb
+    ports:
+      - "21443:443"
+
+  agency-service-ejb:
+    build: agency-service-ejb
+    # depends_on flat-service-haproxy
+    ports:
+      - "28080:8080"
+
 volumes:
   pg-data:
     external: true

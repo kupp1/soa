@@ -16,8 +16,9 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>flat-service</module>
-        <module>agency-service</module>
+        <module>agency-service-web</module>
         <module>common</module>
+        <module>agency-service-ejb</module>
     </modules>
     <packaging>pom</packaging>
 

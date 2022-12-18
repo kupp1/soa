@@ -1,0 +1,12 @@
+server:
+  servlet:
+    context-path: /api/v1
+  port: 8081
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:postgresql://postgres:5432/postgres
+    username: postgres
+    password: postgres

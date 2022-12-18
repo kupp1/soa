@@ -1,0 +1,38 @@
+version: "3.1"
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pg-data:/var/lib/postgresql/data:Z
+    ports:
+      - "5432:5432"
+
+  flat-service-1:
+    build: flat-service
+    depends_on:
+      - postgres
+    environment:
+      SERVICE_PORT: 443
+    ports:
+      - "11443:443"
+      - "14848:4848"
+
+  flat-service-2:
+    build: flat-service
+    depends_on:
+      - postgres
+    environment:
+      SERVICE_PORT: 443
+    ports:
+      - "12443:443"
+      - "24848:4848"
+
+volumes:
+  pg-data:
+    external: true

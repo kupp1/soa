@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Stateless
 public class AgencyServiceBean implements AgencyService {
-    private static final String FLAT_SERVICE_URL = "https://flat-service-1:443"; // TODO: haproxy address
+    private static final String FLAT_SERVICE_URL = "https://haproxy-flat-service:443";
 
     private final FlatServiceAccessor flatServiceAccessor = new FlatServiceAccessor();
 

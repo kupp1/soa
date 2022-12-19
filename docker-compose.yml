@@ -91,11 +91,13 @@ services:
 
   agency-service-ejb-1:
     build: agency-service-ejb
-    # depends_on flat-service-haproxy
+    depends_on:
+      - haproxy-flat-service
 
   agency-service-ejb-2:
     build: agency-service-ejb
-    # depends_on flat-service-haproxy
+    depends_on:
+      - haproxy-flat-service
 
 volumes:
   pg-data:

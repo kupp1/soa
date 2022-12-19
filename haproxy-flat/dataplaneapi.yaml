@@ -1,0 +1,21 @@
+config_version: 2
+name: haproxy1
+dataplaneapi:
+  host: haproxy-flat-service
+  port: 5555
+  show_system_info: true
+  user:
+    - name: admin
+      password: admin
+      insecure: true
+haproxy:
+  config_file: "/usr/local/etc/haproxy/haproxy.cfg"
+  haproxy_bin: "/usr/local/sbin/haproxy"
+  reload:
+    reload_delay: 5
+    reload_cmd: ""
+    restart_cmd: "kill -SIGUSR2 1"
+log_targets:
+  - log_to: stdout
+    log_level: debug
+    log-format: text

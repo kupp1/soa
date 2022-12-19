@@ -15,12 +15,29 @@ services:
 
   # -------------------- flat-service --------------------
 
+  consul-flat-service:
+    image: consul:1.14.3
+    ports:
+      - "8500:8500"
+
+  haproxy-flat-service:
+    build: haproxy-flat
+    depends_on:
+      - flat-service-1
+      - flat-service-2
+      - consul-flat-service
+    ports:
+      - "1443:443"
+      - "5555:5555"
+
   flat-service-1:
     build: flat-service
     depends_on:
       - postgres
+      - consul-flat-service
     environment:
       SERVICE_PORT: 443
+      SERVICE_NAME: flat-service-1
     ports:
       - "11443:443"
       - "14848:4848"
@@ -29,8 +46,10 @@ services:
     build: flat-service
     depends_on:
       - postgres
+      - consul-flat-service
     environment:
       SERVICE_PORT: 443
+      SERVICE_NAME: flat-service-2
     ports:
       - "12443:443"
       - "24848:4848"

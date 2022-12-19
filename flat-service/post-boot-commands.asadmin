@@ -2,5 +2,6 @@ set configs.config.server-config.network-config.network-listeners.network-listen
 
 set configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port=${ENV=SERVICE_PORT}
 set configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.cert-nickname=my_cert_ssl
+set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.http2-enabled=false
 
 deploy --port 4848 --contextroot="/" /flat-service-1.0-SNAPSHOT.war

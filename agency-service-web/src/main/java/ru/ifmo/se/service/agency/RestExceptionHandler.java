@@ -1,8 +1,6 @@
-package ru.ifmo.se.common;
+package ru.ifmo.se.service.agency;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,19 +16,16 @@ import ru.ifmo.se.common.model.ErrorResponse;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({BadEntityException.class, InvalidEntityIdException.class})
     protected ResponseEntity<Object> handleBadEntity(AbstractRestException e, WebRequest request) {
-        return sendResponse(e, request, HttpStatus.BAD_REQUEST, new ErrorResponse(e.getMessages()));
+        return sendResponse(HttpStatus.BAD_REQUEST, new ErrorResponse(e.getMessages()));
     }
 
     @ExceptionHandler({NoEntitiesException.class})
     protected ResponseEntity<Object> handleNotFound(AbstractRestException e, WebRequest request) {
-        return sendResponse(e, request, HttpStatus.NOT_FOUND, new ErrorResponse(e.getMessages()));
+        return sendResponse(HttpStatus.NOT_FOUND, new ErrorResponse(e.getMessages()));
     }
 
-    private ResponseEntity<Object> sendResponse(RuntimeException e, WebRequest request, HttpStatus status,
+    private ResponseEntity<Object> sendResponse(HttpStatus status,
                                                 ErrorResponse errorResponse) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        return handleExceptionInternal(e, errorResponse, httpHeaders, status, request);
+        return new ResponseEntity<>(errorResponse, status);
     }
 }

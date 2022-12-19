@@ -27,7 +27,7 @@ public class AgencyController {
     public AgencyController() throws NamingException {
         Properties props = new Properties();
         props.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
-        props.put(Context.PROVIDER_URL,"http://agency-service-ejb:8080/tomee/ejb");
+        props.put(Context.PROVIDER_URL,"http://haproxy-agency-service-ejb:8080/tomee/ejb");
         ejbContext = new InitialContext(props);
 
         agencyService = (AgencyService) ejbContext.lookup(AGENCY_SERVICE_BEAN_NAME);

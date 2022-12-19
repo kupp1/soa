@@ -13,6 +13,8 @@ services:
     ports:
       - "5432:5432"
 
+  # -------------------- flat-service --------------------
+
   flat-service-1:
     build: flat-service
     depends_on:
@@ -33,18 +35,48 @@ services:
       - "12443:443"
       - "24848:4848"
 
-  agency-serice-web:
+  # -------------------- agency-service-web --------------------
+
+  haproxy-agency-service-web:
+    build: haproxy-agency-web
+    depends_on:
+      - agency-service-web-1
+      - agency-service-web-2
+    ports:
+      - "2443:443"
+
+  agency-service-web-1:
     build: agency-service-web
     depends_on:
-      - agency-service-ejb
+      - haproxy-agency-service-ejb
     ports:
       - "21443:443"
 
-  agency-service-ejb:
-    build: agency-service-ejb
-    # depends_on flat-service-haproxy
+  agency-service-web-2:
+    build: agency-service-web
+    depends_on:
+      - haproxy-agency-service-ejb
+    ports:
+      - "22443:443"
+
+  # -------------------- agency-service-ejb --------------------
+
+  haproxy-agency-service-ejb:
+    build: haproxy-agency-ejb
+    depends_on:
+      - agency-service-ejb-1
+      - agency-service-ejb-2
     ports:
       - "28080:8080"
+      - "28404:8404"
+
+  agency-service-ejb-1:
+    build: agency-service-ejb
+    # depends_on flat-service-haproxy
+
+  agency-service-ejb-2:
+    build: agency-service-ejb
+    # depends_on flat-service-haproxy
 
 volumes:
   pg-data:

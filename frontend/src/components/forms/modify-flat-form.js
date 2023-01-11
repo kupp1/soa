@@ -9,7 +9,7 @@ import {parseFlatFromXML, parseFlatToXML} from "../../utils/parsers/xml/flat-par
 import {parseError} from "../../utils/parsers/xml/error-parser";
 import {useSnackbar} from "notistack";
 
-export function ModifyFlatForm() {
+export function ModifyFlatForm(props) {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [modifyForm] = useForm();
@@ -47,6 +47,7 @@ export function ModifyFlatForm() {
                         variant: "success"
                     })
                     setIsModifyFlatModalOpen(false);
+                    props.reloadTable()
                 })
                 .catch((err) => {
                     enqueueSnackbar(err.response.data.messages[0], {
@@ -75,7 +76,7 @@ export function ModifyFlatForm() {
                     label="ID"
                     name="id"
                     rules={[
-                        {required: true, message: 'Please input ID!'},
+                        {required: false, message: 'Please input ID!'},
                         {validator: validateIntegerGreaterThanZero}
                     ]}
                 >

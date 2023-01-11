@@ -43,7 +43,7 @@ export default function AgencyTable({pageSize}) {
         queryParams.append("page", page - 1);
         queryParams.append("pageSize", pageSize);
 
-        setLoading(true)
+        setLoading(false)
 
         axios
             .get(url, {params: queryParams})
@@ -378,7 +378,7 @@ export default function AgencyTable({pageSize}) {
                 rowKey="key"
                 dataSource={data}
                 onChange={handleTableChange}
-                loading={loading}
+                loading={false}
                 bordered={true}
                 pagination={{
                     total: totalCount,

@@ -6,7 +6,7 @@ import {Button, Form, InputNumber} from "antd";
 import {validateIntegerGreaterThanZero} from "./validators";
 import {useForm} from "antd/es/form/Form";
 
-export function DeleteFlatForm() {
+export function DeleteFlatForm(props) {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [deleteForm] = useForm();
@@ -18,11 +18,11 @@ export function DeleteFlatForm() {
                         autoHideDuration: 5000,
                         variant: "success"
                     })
+                    props.reloadTable()
                 }
             )
             .catch((err) => {
-                let error = parseError(err.response.data)
-                enqueueSnackbar(error.message, {
+                enqueueSnackbar(err.response.data.messages[0], {
                     autoHideDuration: 5000,
                     variant: "error"
                 })
@@ -43,7 +43,7 @@ export function DeleteFlatForm() {
                     label="ID"
                     name="id"
                     rules={[
-                        {required: true, message: 'Please input ID!'},
+                        {required: false, message: 'Please input ID!'},
                         {validator: validateIntegerGreaterThanZero}
                     ]}
                 >

@@ -12,6 +12,8 @@ import {FLATS_API} from "../../utils/api-constancts"
 import {ReloadOutlined} from "@ant-design/icons";
 import {AddFlatForm} from "../forms/add-flat-form";
 import {MinAreaModal} from "../fast-response/min-area-modal";
+import {ModifyFlatForm} from "../forms/modify-flat-form";
+import {DeleteFlatForm} from "../forms/delete-flat-form";
 
 export default function FlatsTable({pageSize}) {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -165,7 +167,7 @@ export default function FlatsTable({pageSize}) {
 
                 <Typography> &nbsp; </Typography>
 
-                <AddFlatForm/>
+                <AddFlatForm reloadTable={() => {getData(currentPage, sortQueryParams, parseMapFilters(filterModel))}}/>
                 <MinAreaModal/>
             </Space>
             <Typography> &nbsp; </Typography>
@@ -235,7 +237,7 @@ export default function FlatsTable({pageSize}) {
                     {
                         title: 'Furnish',
                         dataIndex: 'furnish',
-                        key: 'Furnish',
+                        key: 'furnish',
                         sorter: {multiple: 3},
                         sortDirections: ['ascend', 'descend'],
                         ...getColumnSearchProps('furnish', handleFilterChange)
@@ -262,7 +264,7 @@ export default function FlatsTable({pageSize}) {
                             {
                                 title: 'Name',
                                 dataIndex: ['house', 'name'],
-                                key: 'house.name',
+                                key: 'houseName',
                                 sorter: {multiple: 3},
                                 sortDirections: ['ascend', 'descend'],
                                 ...getColumnSearchProps('house.name', handleFilterChange)
@@ -270,7 +272,7 @@ export default function FlatsTable({pageSize}) {
                             {
                                 title: 'Year',
                                 dataIndex: ['house', 'year'],
-                                key: 'house.year',
+                                key: 'houseYear',
                                 sorter: {multiple: 3},
                                 sortDirections: ['ascend', 'descend'],
                                 ...getColumnSearchProps('house.year', handleFilterChange)
@@ -278,7 +280,7 @@ export default function FlatsTable({pageSize}) {
                             {
                                 title: 'Number of lifts',
                                 dataIndex: ['house', 'numberOfLifts'],
-                                key: 'house.numberOfLifts',
+                                key: 'houseNumberOfLifts',
                                 sorter: {multiple: 3},
                                 sortDirections: ['ascend', 'descend'],
                                 ...getColumnSearchProps('house.numberOfLifts', handleFilterChange)
@@ -336,6 +338,11 @@ export default function FlatsTable({pageSize}) {
                 }}
                 scroll={{ x: 400 }}
             />
+
+            <Space direction="vertical" size="middle" style={{ display: 'flex' }} align={"center"}>
+                <ModifyFlatForm reloadTable={() => {getData(currentPage, sortQueryParams, parseMapFilters(filterModel))}}/>
+                <DeleteFlatForm reloadTable={() => {getData(currentPage, sortQueryParams, parseMapFilters(filterModel))}}/>
+            </Space>
         </>
     );
 }

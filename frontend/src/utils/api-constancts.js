@@ -1,5 +1,5 @@
-const FLATS_SERVICE = "https://localhost:47232"
-const AGENCY_SERVICE = "https://localhost:56852"
+const FLATS_SERVICE = "https://localhost:1443"
+const AGENCY_SERVICE = "https://localhost:2443"
 
 
 export const FLATS_API = `${FLATS_SERVICE}/api/v1/flat`

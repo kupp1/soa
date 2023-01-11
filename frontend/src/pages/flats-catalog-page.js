@@ -27,10 +27,6 @@ export default function FlatsCatalogPage() {
                     }}
                            size={0}
                     >
-                        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                            <ModifyFlatForm/>
-                            <DeleteFlatForm/>
-                        </Space>
                     </Space>
 
                 </Content>

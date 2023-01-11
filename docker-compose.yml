@@ -29,6 +29,7 @@ services:
     ports:
       - "1443:443"
       - "5555:5555"
+      - "18404:8404"
 
   flat-service-1:
     build: flat-service
@@ -63,6 +64,7 @@ services:
       - agency-service-web-2
     ports:
       - "2443:443"
+      - "28405:8404"
 
   agency-service-web-1:
     build: agency-service-web

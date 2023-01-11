@@ -7,7 +7,7 @@ import axios from "axios";
 import {FLATS_API} from "../../utils/api-constancts";
 import {parseError} from "../../utils/parsers/xml/error-parser";
 
-export function AddFlatForm() {
+export function AddFlatForm(props) {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [isAddFlatModalOpen, setIsAddFlatModalOpen] = useState(false);
@@ -35,6 +35,7 @@ export function AddFlatForm() {
                     variant: "success"
                 })
                 setIsAddFlatModalOpen(false);
+                props.reloadTable()
             })
             .catch((err) => {
                 enqueueSnackbar(err.response.data.messages[0], {
